@@ -28,7 +28,7 @@ A simple webservice for the Stanford NER Tagger
 4. Run the server
 
     ```sh
-    $ java -jar target/scala-[SCALA-VERSION]/ner-service-[SCALA-VERSION]-0.1.0-SNAPSHOT.jar &
+    $ PORT=8080 java -jar target/scala-[SCALA-VERSION]/ner-service-[SCALA-VERSION]-0.1.0-SNAPSHOT.jar &
     ```
 
 
@@ -38,3 +38,31 @@ A simple webservice for the Stanford NER Tagger
     $ curl -X POST --data "text=Das ist Angela Merkel" localhost:8080
     Das ist <I-PER>Angela Merkel</I-PER>
     ```
+
+## Running as Daemon
+
+If you want to run the service in the background you can use for example use systemd
+
+```
+# /etc/systemd/system/ner.service
+
+[Unit]
+Description=NER Tagging Web Service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/java -jar /opt/scala-ner-server/scala-ner-server_0.1.0.jar
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Then reload the services and start it
+
+```sh
+$ sudo systemctl reload-daemons
+$ sudo systemctl enable ner.service
+$ sudo systemctl start ner.service
+
+```
